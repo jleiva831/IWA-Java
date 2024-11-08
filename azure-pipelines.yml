@@ -20,14 +20,14 @@ steps:
 - task: FortifyOnDemandStatic@9
   inputs:
     FortifyProjects: '.'
-    ScanCentralLocation: '.'
     FodConnection: 'AzuredevopsApi'
     ReleaseOptions: '0'
-    ReleaseId: 1262706
+    ReleaseId: 1308133
     EntitlementSelection: '1'
     EntitlementPreference: '0'
-    OverrideScanSettings: '2'
+    OverrideScanSettings: '1'
     InProgressScanActionType: '2'
     RemediationScanPreference: '2'
     BuildType: 'mvn'
-    BuildFile: 'pom.xml'
+    TechnologyStackJavaOne: '7'
+    PolicyFailAction: '0'
