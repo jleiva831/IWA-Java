@@ -10,7 +10,7 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: FortifyOnDemandStatic@9
+- task: FortifyOnDemandStatic@8
   inputs:
     FortifyProjects: '$(Build.Repository.LocalPath)'
     FodConnection: 'AzuredevopsApi'    # create Azure DevOps Service connection with name FoD_AMS
