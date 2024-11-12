@@ -37,5 +37,5 @@ steps:
     InProgressScanActionType: '2'
     RemediationScanPreference: '2'
     BuildType: 'mvn'
-    TechnologyStackJavaOne: '7'
+    TechnologyStackJavaOne: '17'
     PolicyFailAction: '0'
