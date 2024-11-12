@@ -22,7 +22,7 @@ steps:
     mavenAuthenticateFeed: false
     effectivePomSkip: false
     sonarQubeRunAnalysis: false
-- task: FortifyOnDemandStatic@9
+- task: FortifyOnDemandStatic@10
   inputs:
     FortifyProjects: '$(Build.Repository.LocalPath)'
     FodConnection: 'AzuredevopsApi'    # create Azure DevOps Service connection with name FoD_AMS
