@@ -13,7 +13,29 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
+    mavenVersionOption: 'Default'
+    mavenOptions: '-Xmx3072m'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: false
+- task: FortifyOnDemandStatic@9
+  inputs:
+    FortifyProjects: '$(Build.Repository.LocalPath)'
+    FodConnection: 'AzuredevopsApi'    # create Azure DevOps Service connection with name FoD_AMS
+    ReleaseOptions: '0'
+    ReleaseId: 1308133            # update FoD RELEASE ID
+    EntitlementSelection: '1'
+    EntitlementPreference: '0'
+    OverrideScanSettings: '1'
+    InProgressScanActionType: '2'
+    RemediationScanPreference: '2'
+    BuildType: 'mvn'
+    TechnologyStackJavaOne: '7'
+    PolicyFailAction: '0'
