@@ -10,7 +10,19 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: FortifyOnDemandStatic@8
+- task: Maven@4
+  inputs:
+    mavenPomFile: 'pom.xml'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
+    mavenVersionOption: 'Default'
+    mavenOptions: '-Xmx3072m'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: false
+- task: FortifyOnDemandStatic@9
   inputs:
     FortifyProjects: '$(Build.Repository.LocalPath)'
     FodConnection: 'AzuredevopsApi'    # create Azure DevOps Service connection with name FoD_AMS
