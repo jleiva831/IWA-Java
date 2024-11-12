@@ -17,17 +17,3 @@ steps:
     echo Add other tasks to build, test, and deploy your project.
     echo See https://aka.ms/yaml
   displayName: 'Run a multi-line script'
-- task: FortifyOnDemandStatic@9
-  inputs:
-    FortifyProjects: '.'
-    FodConnection: 'AzuredevopsApi'
-    ReleaseOptions: '0'
-    ReleaseId: 1308133
-    EntitlementSelection: '1'
-    EntitlementPreference: '0'
-    OverrideScanSettings: '1'
-    InProgressScanActionType: '2'
-    RemediationScanPreference: '2'
-    BuildType: 'mvn'
-    TechnologyStackJavaOne: '7'
-    PolicyFailAction: '0'
