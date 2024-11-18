@@ -22,6 +22,11 @@ steps:
     mavenAuthenticateFeed: false
     effectivePomSkip: false
     sonarQubeRunAnalysis: false
+- task: JavaToolInstaller@0
+  inputs:
+    versionSpec: '17'
+    jdkArchitectureOption: 'x64'
+    jdkSourceOption: 'PreInstalled'
 - task: FortifyOnDemandStatic@9
   inputs:
     FortifyProjects: '$(Build.Repository.LocalPath)'
