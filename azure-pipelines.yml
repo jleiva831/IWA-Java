@@ -24,7 +24,7 @@ steps:
     sonarQubeRunAnalysis: false
 - task: JavaToolInstaller@0
   inputs:
-    versionSpec: '17'
+    versionSpec: '19'
     jdkArchitectureOption: 'x64'
     jdkSourceOption: 'PreInstalled'
 - task: FortifyOnDemandStatic@9
