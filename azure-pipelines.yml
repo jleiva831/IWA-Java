@@ -24,9 +24,9 @@ steps:
     sonarQubeRunAnalysis: false
 - task: JavaToolInstaller@0
   inputs:
-    versionSpec: '19'
+    versionSpec: '17'
     jdkArchitectureOption: 'x64'
-    jdkSourceOption: 'PreInstalled'
+    jdkSourceOption: 'AzureStorage'
 - task: FortifyOnDemandStatic@9
   inputs:
     FortifyProjects: '$(Build.Repository.LocalPath)'
