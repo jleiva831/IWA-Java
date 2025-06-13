@@ -1,0 +1,145 @@
+name: Fortify AST Scan
+
+on:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      # Check out source code
+      - name: Install dependencies
+        shell: bash
+        run: |
+          echo "Dependencies installed✅"
+
+  Unit-test:
+      needs: lint
+      runs-on: ubuntu-latest
+      steps:
+        # Check out source code
+        - name: Unit Test
+          shell: bash
+          run: |
+            echo "Unit Test Passed✅"
+
+  Int-test:
+      needs: Unit-test
+      runs-on: ubuntu-latest
+      steps:
+        # Check out source code
+        - name: Integration Test
+          shell: bash
+          run: |
+            echo "Integration Test Passed✅"
+            
+  Performance:
+      needs: Int-test
+      runs-on: ubuntu-latest
+      steps:
+        # Check out source code
+        - name: Performance Test
+          shell: bash
+          run: |
+            echo "Performance Test Passed✅"
+
+  Fortify-AST-Scan:
+    needs: Performance
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: Check Out Source Code
+        uses: actions/checkout@v4
+      # Perform SAST Scan
+      - name: fcli installation
+        uses: fortify/github-action/setup@v1
+        with:
+          fcli: latest
+          
+      - name: Run Fortify Scan
+        shell: bash
+        run: |
+          fcli fod session login --fod-session=fod-tenant --url=https://api.ams.fortify.com -u=${{secrets.FOD_USER}} -p=${{secrets.FOD_PASSWORD}} -t=${{secrets.FOD_TENANT}}
+          zip -r package.zip . -x "package.zip"
+          fcli fod sast-scan start --release "${FOD_RELEASE}" -f package.zip --store curScan --fod-session fod-tenant
+          sleep 10
+          echo "fod_scan_id=$(fcli util var contents curScan -o 'expr={scanId}')" >> $GITHUB_OUTPUT
+          fcli fod sast-scan wait-for ::curScan:: --fod-session fod-tenant
+          fcli fod session logout --fod-session github-actions
+        env:
+          FOD_RELEASE: "Eight-Ball:GitHub" #ApplicationName:ReleaseName
+
+  Security-Compliance:
+    needs: Fortify-AST-Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: fcli installation
+        uses: fortify/github-action/setup@v1
+        with:
+          fcli: latest
+          
+      - name: Issues Validation
+        shell: bash
+        run: |
+          fcli fod session login --fod-session=fod-tenant --url=https://api.ams.fortify.com -u=${{secrets.FOD_USER}} -p=${{secrets.FOD_PASSWORD}} -t=${{secrets.FOD_TENANT}}
+
+          ### Add the number of incidents into "RESULT" variable
+          RESULT=$(fcli fod issue list --rel="Eight-Ball:GitHub" --filters-param="Severity:High" --fod-session=fod-tenant)
+
+          echo "$RESULT"
+          ### Add the quantity of values who meets the requirement
+          ISSUE_COUNT=$(echo "$RESULT" | grep -c "High")
+
+          echo "High Vulnerabilities Found: $ISSUE_COUNT"
+
+          ### Condition to continue or break pipeline
+          if [ "$ISSUE_COUNT" -gt 1 ]; then
+              echo "PIPELINE BREAK: The security of the code does not complies with the security policies"
+              exit 1
+          else
+              echo "Security Policies in Compliance✅"
+          fi
+  
+  Build:
+    needs: Security-Compliance
+    runs-on: ubuntu-latest
+    steps:
+      # Example of delivery step
+      - name: Docker image build
+        shell: bash
+        run: |
+          echo "Docker image build Successfully✅"
+          
+  Deploy:
+    needs: Build
+    runs-on: ubuntu-latest
+    steps:
+      # Example of delivery step
+      - name: Deploy Phase
+        shell: bash
+        run: |
+          echo "Deployed using k6✅"
+
+  Smoke-Test:
+    needs: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      # Example of delivery step
+      - name: Smoke Test
+        shell: bash
+        run: |
+          echo "Service was successfully deployed✅"
+          
+  DAST:
+    needs: Smoke-Test
+    runs-on: ubuntu-latest
+    steps:
+      # Example of delivery step
+      - name: DAST Scan
+        shell: bash
+        run: |
+          echo "DAST Scan..."
+
